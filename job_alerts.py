@@ -25,6 +25,8 @@ KEYWORDS = [
 ]
 # Titles containing any of these are skipped.
 EXCLUDE = ["intern", "internship"]
+# Only alert on jobs posted within this many days. Set to 0 to disable.
+MAX_AGE_DAYS = 14
 # -----------------------------------------------------
 
 API = "https://careers.micron.com/api/pcsx/search"
@@ -112,7 +114,9 @@ def main():
         print("No jobs returned; API may have changed. Exiting without updating state.")
         sys.exit(1)
 
-    new = [j for j in jobs if str(j["id"]) not in seen and matches(j["name"])]
+    cutoff = time.time() - MAX_AGE_DAYS * 86400 if MAX_AGE_DAYS else 0
+    new = [j for j in jobs if str(j["id"]) not in seen and matches(j["name"])
+           and (j.get("postedTs") or j.get("creationTs") or time.time()) >= cutoff]
     new.sort(key=lambda j: j.get("postedTs") or 0, reverse=True)
     print(f"New matching jobs: {len(new)}")
 
