@@ -2,7 +2,7 @@ name: Job Alerts
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # every 30 minutes (UTC)
+    - cron: "7,37 * * * *"   # every 30 min, at :07 and :37
   workflow_dispatch:          # run manually from the Actions tab
 
 permissions:
